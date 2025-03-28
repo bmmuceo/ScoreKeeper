@@ -9,25 +9,51 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @State private var scoreboard = Scoreboard()
     
-    @State private var players: [String] = ["Elisha", "Andre", "Jasmine"]
     
     var body: some View {
         
-        VStack {
+        VStack(alignment: .leading) {
             
             ///
-            ForEach(0..<players.count, id: \.description) { index in
-                TextField("Name", text: $players[index])
+            Text("Score Keeper")
+                .font(.title)
+                .bold()
+                .padding(.bottom)
+            
+            ///
+            Grid {
+                GridRow {
+                    Text("Player")
+                        .gridColumnAlignment(.leading)
+                    Text("Score")
+                }
+                .font(.headline)
+                
+                ForEach($scoreboard.players) { $player in
+                    GridRow {
+                        TextField("Name", text: $player.name)
+                        Text("\(player.score)")
+                        Stepper("\(player.score)", value: $player.score)
+                            .labelsHidden()
+                    }
+                }
             }
+            
+            .padding(.vertical)
+            ///
             Button("Add Player", systemImage: "plus") {
-                    players.append("")
+                scoreboard.players.append(Player(name: "", score: 0))
+                
             }
+            
+            Spacer()
         }
         .padding()
     }
 }
-
-#Preview {
-    ContentView()
-}
+    
+    #Preview {
+        ContentView()
+    }
